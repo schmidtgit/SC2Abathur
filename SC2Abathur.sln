@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SC2Abathur", "SC2Abathur\SC2Abathur.csproj", "{ACF45865-D700-4F5E-B814-4E5BA14ED89B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NydusNetwork", "NydusNetwork\NydusNetwork.csproj", "{591465FD-8F37-4E3A-85B5-6A941A749161}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abathur", "Abathur\Abathur.csproj", "{27332DC7-853B-4FCD-BA35-00C27C1CFA1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACF45865-D700-4F5E-B814-4E5BA14ED89B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF45865-D700-4F5E-B814-4E5BA14ED89B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF45865-D700-4F5E-B814-4E5BA14ED89B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF45865-D700-4F5E-B814-4E5BA14ED89B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{591465FD-8F37-4E3A-85B5-6A941A749161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{591465FD-8F37-4E3A-85B5-6A941A749161}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{591465FD-8F37-4E3A-85B5-6A941A749161}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{591465FD-8F37-4E3A-85B5-6A941A749161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27332DC7-853B-4FCD-BA35-00C27C1CFA1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27332DC7-853B-4FCD-BA35-00C27C1CFA1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27332DC7-853B-4FCD-BA35-00C27C1CFA1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27332DC7-853B-4FCD-BA35-00C27C1CFA1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E276038-13C8-4C36-AE61-0617A4CBC9BD}
+	EndGlobalSection
+EndGlobal

@@ -20,14 +20,14 @@ namespace Abathur.Core.Intel.Map
     public class GameMap : IGameMap {
         public IAbilityRepository abilityRepository;
         private IUnitTypeRepository unitTypeRepository;
-        public ImageDataHandler BlockedGrid { get; set; }
-        public ImageDataHandler NaturalGrid { get; set; }
-        public ImageDataHandler PlacementGrid { get; set; }
-        public ImageDataHandler Explored { get; set; }
-        public ImageDataHandler Creep { get; set; }
-        public ImageDataHandler Power { get; set; }
-        public ImageDataHandler NonPathable { get; set; }
-        public ImageDataHandler TerrainHeight { get; set; }
+        public MapHandler BlockedGrid { get; set; }
+        public MapHandler NaturalGrid { get; set; }
+        public MapHandler PlacementGrid { get; set; }
+        public MapHandler Explored { get; set; }
+        public MapHandler Creep { get; set; }
+        public MapHandler Power { get; set; }
+        public MapHandler NonPathable { get; set; }
+        public MapHandler TerrainHeight { get; set; }
         public IList<Tile> Graph { get; set; }
         public IList<Region> Regions { get; set; }
         private IRawManager rawManager;
@@ -52,14 +52,14 @@ namespace Abathur.Core.Intel.Map
         }
 
         public void Initialize(ResponseGameInfo info,IIntelManager intelManager) {
-            PlacementGrid = new ImageDataHandler(info.StartRaw.PlacementGrid);
-            NonPathable = new ImageDataHandler(info.StartRaw.PathingGrid);
-            TerrainHeight = new ImageDataHandler(info.StartRaw.TerrainHeight);
-            BlockedGrid = new ImageDataHandler(PlacementGrid.Width,PlacementGrid.Height,new byte[PlacementGrid.Width * PlacementGrid.Height]);
-            NaturalGrid = new ImageDataHandler(PlacementGrid.Width,PlacementGrid.Height,new byte[PlacementGrid.Width * PlacementGrid.Height]);
-            Power = new ImageDataHandler(PlacementGrid.Width,PlacementGrid.Height,new byte[PlacementGrid.Width * PlacementGrid.Height]);
-            Creep = new ImageDataHandler(PlacementGrid.Width,PlacementGrid.Height,new byte[PlacementGrid.Width * PlacementGrid.Height]);
-            Explored = new ImageDataHandler(PlacementGrid.Width,PlacementGrid.Height,new byte[PlacementGrid.Width * PlacementGrid.Height]);
+            PlacementGrid = MapHandler.Instantiate(info.StartRaw.PlacementGrid);
+            NonPathable = MapHandler.Instantiate(info.StartRaw.PathingGrid);
+            TerrainHeight = MapHandler.Instantiate(info.StartRaw.TerrainHeight);
+            BlockedGrid = MapHandler.Instantiate(PlacementGrid.Width, PlacementGrid.Height);
+            NaturalGrid = MapHandler.Instantiate(PlacementGrid.Width, PlacementGrid.Height);
+            Power = MapHandler.Instantiate(PlacementGrid.Width, PlacementGrid.Height);
+            Creep = MapHandler.Instantiate(PlacementGrid.Width, PlacementGrid.Height);
+            Explored = MapHandler.Instantiate(PlacementGrid.Width, PlacementGrid.Height);
             intelManager.Handler.RegisterHandler(Case.StructureAddedSelf,u => EventUnitAdded(u));
             intelManager.Handler.RegisterHandler(Case.StructureDestroyed,u => EventUnitDestroyed(u));
         }
@@ -71,7 +71,7 @@ namespace Abathur.Core.Intel.Map
         private float FootprintRadius(UnitTypeData structure) => abilityRepository.Get(structure.AbilityId).FootprintRadius;
         private int StructureSize(UnitTypeData structure) => (int)FootprintRadius(structure) * 2;
         private void UpdateBlockedGrid(UnitTypeData unit,Point2D position,byte value) => UpdateImageGrid(FootprintRadius(unit),position.X,position.Y,value,BlockedGrid);
-        private void UpdateImageGrid(float radius,float xPosition,float yPosition,byte value,ImageDataHandler image) {
+        private void UpdateImageGrid(float radius,float xPosition,float yPosition,byte value, MapHandler image) {
             var x = (int)(xPosition - radius);
             var y = (int)(yPosition - radius);
             var size = radius * 2;

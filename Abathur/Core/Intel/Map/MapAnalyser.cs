@@ -104,7 +104,7 @@ namespace Abathur.Core.Intel.Map
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++) {
                     if(!map.NonPathable.IsSet(x,y)) {
-                        graph.Add(new Tile(x,height - y - 1,map.TerrainHeight.GetNumber(x,y) * 10));//TODO Hacking height to gain meaningful clustering.
+                        graph.Add(new Tile(x,height - y - 1,map.TerrainHeight.GetValue(x,y) * 10));//TODO Hacking height to gain meaningful clustering.
                     }
                 }
             Console.WriteLine("Connecting graph");
@@ -135,7 +135,7 @@ namespace Abathur.Core.Intel.Map
                               " Secs... ");
             return graph;
         }
-        private List<Tile> GetNeighbors(Tile tile,List<Tile> tiles,ImageDataHandler nonPathable) {
+        private List<Tile> GetNeighbors(Tile tile,List<Tile> tiles,MapHandler nonPathable) {
             var neighbors = new List<Tile>();
             neighbors.Add(tiles.Find(t => t.X == tile.X - 1 && t.Y == tile.Y - 1));
             neighbors.Add(tiles.Find(t => t.X == tile.X - 1 && t.Y == tile.Y));
@@ -145,7 +145,6 @@ namespace Abathur.Core.Intel.Map
             neighbors.Add(tiles.Find(t => t.X == tile.X + 1 && t.Y == tile.Y - 1));
             neighbors.Add(tiles.Find(t => t.X == tile.X + 1 && t.Y == tile.Y));
             neighbors.Add(tiles.Find(t => t.X == tile.X + 1 && t.Y == tile.Y + 1));
-
             neighbors.RemoveAll(i => i == null);
             return neighbors;
         }

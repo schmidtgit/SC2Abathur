@@ -6,37 +6,51 @@ using Abathur.Core.Combat;
 using Abathur.Model;
 using Abathur.Modules;
 using Abathur.Repositories;
-using NydusNetwork.Model;
 
-namespace SC2Abathur.Modules.Examples {
-    // This demo runs best with the "AutoHarvestGather" module in the setup.json file!
-    // ZergDemo inherits IReplaceableModule and is therefore accessible in IoC container and can be swapped at runtime.
-    public class ZergDemo : IReplaceableModule {
+namespace SC2Abathur.Modules.Examples
+{
+    /// <summary>
+    /// ZergDemo inherits from IReplaceableModule and is therefore accessible in IoC container and can be swapped at runtime.
+    /// It will also automaticly be included in Abathur if mentioned in setup.json
+    /// </summary>
+    public class ZergDemo : IReplaceableModule
+    {
+        // Collection of 'colonies' (bases)
         private IEnumerable<IColony> _eStarts;
-        private bool _done;
+        // Abathur provided 'managers'
         private readonly IIntelManager _intelManager;
         private readonly ICombatManager _combatManager;
         private readonly IProductionManager _productionManager;
+        // Squads are collection of units (for easy unit management)
         private ISquadRepository _squadRep;
         private Squad _theGang;
+        // Primitive state trackers used for this demo.
+        private bool _attackMode;
         private bool _startCalled;
-        private GameSettings _gameSettings;
 
-        // Take required managers in the constructor, see FullModule for all possible managers.
-        public ZergDemo(IIntelManager intelManager,ICombatManager combatManager,IProductionManager productionManager,ISquadRepository squadRepo,GameSettings gamsettings) {
+        /// <summary>
+        /// All these varibles will be populated by Abathur
+        /// </summary>
+        public ZergDemo(IIntelManager intelManager, ICombatManager combatManager, IProductionManager productionManager, ISquadRepository squadRepo)
+        {
             _intelManager = intelManager;
             _combatManager = combatManager;
             _productionManager = productionManager;
             _squadRep = squadRepo;
-            _gameSettings = gamsettings;
         }
 
+        /// <summary>
+        /// Do nothing - must implement to satisfy interface.
+        /// </summary>
         public void Initialize() { }
 
-        public void OnStart() {
-            if(_startCalled)
+        /// <summary>
+        /// Called on the first frame of every game.
+        /// </summary>
+        public void OnStart()
+        {
+            if (_startCalled)
                 return;
-            _productionManager.ClearBuildOrder();
 
             // Colonies marked with Starting location are possible starting locations of the enemy NOT yourself
             _eStarts = _intelManager.Colonies.Where(c => c.IsStartingLocation);
@@ -49,87 +63,110 @@ namespace SC2Abathur.Modules.Examples {
             _intelManager.PrimaryColony.DesiredVespeneWorkers = 4;
 
             // Creating a squad allows for treating a group of units as one.
-            _theGang = _squadRep.Create("TheGang"); // The name allows other modules to look it up by name! (as IDs are generated at runtime)
+            // The name allows other modules to look it up by name! (as IDs are generated at runtime)
+            _theGang = _squadRep.Create("TheGang");
+
+            // Include workers in our squad!
+            foreach (var crook in _intelManager.UnitsSelf())
+                if (crook.UnitType != BlizzardConstants.Unit.Overlord)
+                    _theGang.AddUnit(crook);
 
             // The _intelManager.Handler allows for actions to be carried out when specific events happens.
             // Registering a handler to a Case means the handler will be called every time the event happens.
-            _intelManager.Handler.RegisterHandler(Case.UnitAddedSelf,UnitMadeHandler);
-            _intelManager.Handler.RegisterHandler(Case.StructureAddedSelf,s => {
-                if(s.UnitType == BlizzardConstants.Unit.RoachWarren)
-                    _intelManager.PrimaryColony.DesiredVespeneWorkers = 6; // Increase vespene workers after the roach warren is added!
+            _intelManager.Handler.RegisterHandler(Case.UnitAddedSelf, UnitCreationHandler);
+            _intelManager.Handler.RegisterHandler(Case.StructureAddedSelf, s =>
+            {
+                if (s.UnitType == BlizzardConstants.Unit.RoachWarren)
+                    // Increase vespene workers after the roach warren is added!
+                    _intelManager.PrimaryColony.DesiredVespeneWorkers = 6;
             });
 
             // A variable needed since ZergDemo is a replaceable module relying on its on OnStart, but dont want it to be called twice
             _startCalled = true;
-            _done = false;
+            _attackMode = false;
         }
 
-        public void OnStep() {
-            if(_intelManager.GameLoop % 250 == 0 && _done)
-                KillEverything();
-            if(_intelManager.ProductionQueue.Any())
+        /// <summary>
+        /// Called every step of the game, except the first.
+        /// </summary>
+        public void OnStep()
+        {
+            if (_intelManager.GameLoop % 250 == 0 && _attackMode)
+                AttackEverything();
+            if (_intelManager.ProductionQueue.Any())
                 return;
-            if(_done)
+            if (_attackMode)
                 return;
 
-            foreach(var colony in _eStarts)
-                _combatManager.AttackMove(_theGang,colony.Point,true);
-            _done = true;
-            QueueThemUp();
+            // Attack all colonies...
+            foreach (var colony in _eStarts)
+                _combatManager.AttackMove(_theGang, colony.Point, true);
+            _attackMode = true;
+            // Spam roaches...
+            for (int i = 0; i < 100; i++)
+                _productionManager.QueueUnit(BlizzardConstants.Unit.Roach);
         }
 
-        public void OnGameEnded() {}
-
-        public void OnRestart() {
+        /// <summary>
+        /// Required to satisfy interface. Restart state trackers.
+        /// </summary>
+        public void OnGameEnded()
+        {
             _startCalled = false;
-            _done = false;
+            _attackMode = false;
         }
 
-        public void OnAdded() {
-            OnStart();
-            foreach(var crook in _intelManager.UnitsSelf()) {
-                if(crook.UnitType != BlizzardConstants.Unit.Overlord) {
-                    _theGang.AddUnit(crook);
-                }
-            }
-        }
+        /// <summary>
+        /// Required to satisfy interface.
+        /// </summary>
+        public void OnRestart() { }
 
-        public void OnRemoved() {
-            _startCalled = false;
-            _done = false;
-        }
 
-        // Called by IntelManager, adds everything - expect overloads - to the Squad
-        public void UnitMadeHandler(IUnit u) {
+        /// <summary>
+        /// If added by another module mid-game (see RandomDemo)
+        /// </summary>
+        public void OnAdded() => OnStart();
+
+        /// <summary>
+        /// If removed mid-game.
+        /// </summary>
+        public void OnRemoved() => OnGameEnded();
+
+        /// <summary>
+        /// Called by Abathur (registred in OnStart)
+        /// Added new attack units to our squad. Not called for workers.
+        /// </summary>
+        public void UnitCreationHandler(IUnit u)
+        {
             // UnitType is a stable id of the Type of the unit. BlizzardConstants contains static variables to make it easy to find the specific id you need.
-            if(u.UnitType != BlizzardConstants.Unit.Overlord)
+            if (u.UnitType != BlizzardConstants.Unit.Overlord)
                 _theGang.AddUnit(u);
         }
 
-        private void KillEverything() {
+        /// <summary>
+        /// Attack everything visible!
+        /// </summary>
+        private void AttackEverything()
+        {
+            // List of all visible enemy buildings...
             var target = _intelManager.StructuresEnemyVisible.FirstOrDefault();
-            if(target == null) {
-                foreach(var colony in _eStarts)
-                    _combatManager.AttackMove(_theGang,colony.Point,true);
-                foreach(var colony in _intelManager.Colonies)
-                    if(_theGang.Units.Any(u => u.Orders.Count == 0))
-                        _combatManager.AttackMove(_theGang,colony.Point,true);
+            if (target == null)
+            {
+                foreach (var colony in _eStarts)
+                    _combatManager.AttackMove(_theGang, colony.Point, true);
+                foreach (var colony in _intelManager.Colonies)
+                    if (_theGang.Units.Any(u => u.Orders.Count == 0))
+                        _combatManager.AttackMove(_theGang, colony.Point, true);
                 return;
             }
-            _combatManager.AttackMove(_theGang,target.Point);
+            _combatManager.AttackMove(_theGang, target.Point);
         }
 
-        private void QueueThemUp() {
-            for(int i = 0; i < 100; i++) {
-                _productionManager.QueueUnit(BlizzardConstants.Unit.Roach);
-            }
-        }
-
-        // This is an example of a complete hardcoded build order.
-        // Simply queue the units you want built, in the order you want them, using the production manager.
-        // The production manager will automaticly sort out invalid build orders, and write a warning to log.
-        public void QueueOneBaseRavager() {
-            // QueueUnit takes the id of the unit-type you want to produce. These ids are easily accessible through BlizzardConstants
+        /// <summary>
+        /// Hardcoded build-order...
+        /// </summary>
+        public void QueueOneBaseRavager()
+        {
             _productionManager.QueueUnit(BlizzardConstants.Unit.Drone);
             _productionManager.QueueUnit(BlizzardConstants.Unit.Drone);
             _productionManager.QueueUnit(BlizzardConstants.Unit.SpawningPool);

@@ -14,10 +14,7 @@ namespace Abathur.Core.Intel.Map
         public abstract bool IsSet(int x, int y);
         public abstract int GetValue(int x, int y);
         protected bool CalculateIndex(int x, int y, int l, out int index) {
-            index = 0;
-            if (x == 0 || y == 0)
-                return false;
-            index = x + (Height - 1 - y) * Width;
+            index = x + y * Width;
             return index <= l;
         }
 

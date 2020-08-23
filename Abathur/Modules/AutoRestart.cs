@@ -1,6 +1,4 @@
-﻿using NydusNetwork.API.Protocol;
-
-namespace Abathur.Modules
+﻿namespace Abathur.Modules
 {
     class AutoRestart : IModule {
         private IAbathur abathur;

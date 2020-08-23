@@ -16,7 +16,7 @@ namespace SC2Abathur.Settings
         /// <summary>
         /// Used for setting up the modules in the Abathur framework.
         /// </summary>
-        public static AbathurSetup AbathurSetup => new AbathurSetup { IsParallelized = false, Modules = new List<string>{ "EmptyModule", "AutoHarvestGather", "AutoSupply" } };
+        public static AbathurSetup AbathurSetup => new AbathurSetup { IsParallelized = false, Modules = new List<string>{ "RandomDemo", "AutoHarvestGather", "AutoSupply" } };
         /// <summary>
         /// Stores game related settings used by the StarCraft II client.
         /// </summary>

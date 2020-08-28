@@ -21,7 +21,7 @@ namespace Abathur.Core.Raw
             log = logger;
         }
 
-        public void SendRawRequest(Request r) => _client.AsyncRequest(r);
+        public void SendRawRequest(Request r) => _client.SendRequest(r);
 
         public bool TryWaitRawRequest(Request req,out Response response) => TryWaitRawRequest(req,out response, TIME_OUT);
 
@@ -45,7 +45,7 @@ namespace Abathur.Core.Raw
         public void Step() {
             lock(commands) {
                 if(commands.Count != 0) {
-                    _client.AsyncRequest(new Request { Action = new RequestAction { Actions = { commands } } });
+                    _client.SendRequest(new Request { Action = new RequestAction { Actions = { commands } } });
                     commands.Clear();
                 }
             }
@@ -70,7 +70,7 @@ namespace Abathur.Core.Raw
         }
 
         public bool JoinGame() {
-            _client.AsyncPingRequest();
+            _client.PingRequest();
             if(!_client.TryWaitJoinGameRequest(out var joinResponse,TIME_OUT)) {
                 log.LogError("RawManager: Timed out on JoinGame");
                 return false;

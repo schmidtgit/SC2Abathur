@@ -4,6 +4,8 @@ using NydusNetwork.Model;
 using NydusNetwork.Services;
 using NydusNetwork.Logging;
 using NydusNetwork.API;
+using static NydusNetwork.API.Protocol.Response;
+using System;
 
 namespace NydusNetwork {
     public class GameClient : IGameClient {
@@ -37,21 +39,21 @@ namespace NydusNetwork {
             => _connection.Connect(_settings.GetUri(_isHost));
         public bool ConnectToActiveClient()
             => _connection.Connect(_settings.GetUri(_isHost), 1);
-        public void AsyncRequest(Request r)     => _connection.AsyncSend(r);
-        public void AsyncCreateGameRequest()    => AsyncRequest(_settings.CreateGameRequest());
-        public void AsyncJoinGameRequest()      => AsyncRequest(_settings.JoinGameRequest(_isHost));
-        public void AsyncRestartGameRequest()   => AsyncRequest(ClientConstant.RequestRestartGame);
-        public void AsyncLeaveGameRequest()     => AsyncRequest(ClientConstant.RequestLeaveGame);
-        public void AsyncQuickSaveRequest()     => AsyncRequest(ClientConstant.RequestQuickSave);
-        public void AsyncQuickLoadRequest()     => AsyncRequest(ClientConstant.RequestQuickLoad);
-        public void AsyncQuitRequest()          => AsyncRequest(ClientConstant.RequestQuit);
-        public void AsyncGameInfoRequest()      => AsyncRequest(ClientConstant.RequestGameInfo);
-        public void AsyncSaveReplayRequest()    => AsyncRequest(ClientConstant.RequestSaveReplay);
-        public void AsyncAvailableMapsRequest() => AsyncRequest(ClientConstant.RequestAvailableMaps);
-        public void AsyncPingRequest()          => AsyncRequest(ClientConstant.RequestPing);
-        public void AsyncObservationRequest()   => AsyncRequest(ClientConstant.RequestObservation);
-        public void AsyncDataRequest()          => AsyncRequest(ClientConstant.RequestData);
-        public void AsyncStepRequest()          => AsyncRequest(ClientConstant.RequestStep);
+        public void SendRequest(Request r)     => _connection.AsyncSend(r);
+        public void CreateGameRequest()    => SendRequest(_settings.CreateGameRequest());
+        public void JoinGameRequest()      => SendRequest(_settings.JoinGameRequest(_isHost));
+        public void RestartGameRequest()   => SendRequest(ClientConstant.RequestRestartGame);
+        public void LeaveGameRequest()     => SendRequest(ClientConstant.RequestLeaveGame);
+        public void QuickSaveRequest()     => SendRequest(ClientConstant.RequestQuickSave);
+        public void QuickLoadRequest()     => SendRequest(ClientConstant.RequestQuickLoad);
+        public void QuitRequest()          => SendRequest(ClientConstant.RequestQuit);
+        public void GameInfoRequest()      => SendRequest(ClientConstant.RequestGameInfo);
+        public void SaveReplayRequest()    => SendRequest(ClientConstant.RequestSaveReplay);
+        public void AvailableMapsRequest() => SendRequest(ClientConstant.RequestAvailableMaps);
+        public void PingRequest()          => SendRequest(ClientConstant.RequestPing);
+        public void ObservationRequest()   => SendRequest(ClientConstant.RequestObservation);
+        public void DataRequest()          => SendRequest(ClientConstant.RequestData);
+        public void StepRequest()          => SendRequest(ClientConstant.RequestStep);
 
         public bool TryWaitRequest(Request req,out Response r,int? wait=null) {
             if(wait.HasValue)
@@ -73,5 +75,10 @@ namespace NydusNetwork {
         public bool TryWaitObservationRequest(out Response r,int? wait = null)      => TryWaitRequest(ClientConstant.RequestObservation,out r,wait);
         public bool TryWaitStepRequest(out Response r,int? wait = null)             => TryWaitRequest(ClientConstant.RequestStep,out r,wait);
         public bool TryWaitDataRequest(out Response r,int? wait = null)             => TryWaitRequest(ClientConstant.RequestData,out r,wait);
+        // Handlers
+        public void RegisterHandler(ResponseOneofCase action, Action<Response> handler)
+            => _connection.RegisterHandler(action, handler);
+        public void DeregisterHandler(Action<Response> handler)
+            => _connection.DeregisterHandler(handler);
     }
 }

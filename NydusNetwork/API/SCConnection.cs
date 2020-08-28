@@ -7,6 +7,7 @@ using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using static NydusNetwork.API.Protocol.Response;
 
 namespace NydusNetwork.API
 {
@@ -17,12 +18,17 @@ namespace NydusNetwork.API
         private const int TIMEOUT = 250; //ms
 
         private ILogger _log;
-        private CaseHandler<Response.ResponseOneofCase, Response> _handler;
+        private CaseHandler<ResponseOneofCase, Response> _handler;
         private ClientWebSocket _socket;
         public SCConnection(ILogger log) {
             _log = log;
-            _handler = new CaseHandler<Response.ResponseOneofCase, Response>();
+            _handler = new CaseHandler<ResponseOneofCase, Response>();
         }
+
+        public void RegisterHandler(ResponseOneofCase action, Action<Response> handler)
+            => _handler.RegisterHandler(action, handler);
+        public void DeregisterHandler(Action<Response> handler)
+            => _handler.DeregisterHandler(handler);
 
         public bool Connect(Uri uri, int maxAttempts = MAX_CONNECTION_ATTEMPTS) {
             var failCount = 0;

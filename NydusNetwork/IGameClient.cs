@@ -3,21 +3,21 @@
 namespace NydusNetwork {
     public interface IGameClient {
         Status Status { get; }
-        void AsyncAvailableMapsRequest();
-        void AsyncCreateGameRequest();
-        void AsyncDataRequest();
-        void AsyncGameInfoRequest();
-        void AsyncJoinGameRequest();
-        void AsyncLeaveGameRequest();
-        void AsyncObservationRequest();
-        void AsyncPingRequest();
-        void AsyncQuickLoadRequest();
-        void AsyncQuickSaveRequest();
-        void AsyncQuitRequest();
-        void AsyncRequest(Request r);
-        void AsyncRestartGameRequest();
-        void AsyncSaveReplayRequest();
-        void AsyncStepRequest();
+        void AvailableMapsRequest();
+        void CreateGameRequest();
+        void DataRequest();
+        void GameInfoRequest();
+        void JoinGameRequest();
+        void LeaveGameRequest();
+        void ObservationRequest();
+        void PingRequest();
+        void QuickLoadRequest();
+        void QuickSaveRequest();
+        void QuitRequest();
+        void SendRequest(Request r);
+        void RestartGameRequest();
+        void SaveReplayRequest();
+        void StepRequest();
         bool ConnectToActiveClient();
         bool ConnectToClient();
         void Initialize(bool asHost);

@@ -7,6 +7,7 @@ using NydusNetwork.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Abathur.Factory
 {
@@ -1295,8 +1296,8 @@ namespace Abathur.Factory
         public Essence FetchFromClient(GameSettings settings)
         {
             this.log?.LogWarning((object)"\tFetching data from Client (THIS MIGHT TAKE A WHILE)");
-            GameSettings settings1 = (GameSettings)settings.Clone();
-            GameClient gameClient = new GameClient(settings1, (ILogger)new MultiLogger(Array.Empty<ILogger>()));
+            GameSettings settingsCopy = (GameSettings)settings.Clone();
+            GameClient gameClient = new GameClient(settingsCopy);
             gameClient.Initialize(true);
             this.log?.LogSuccess((object)"\tSuccessfully connected to client.");
             Response r;
@@ -1304,19 +1305,19 @@ namespace Abathur.Factory
                 this.TerminateWithMessage("Failed to create game");
             if (r.CreateGame.Error == ResponseCreateGame.Types.Error.Unset)
             {
-                this.log?.LogSuccess((object)string.Format("\tSuccessfully created game with {0}", (object)settings1.GameMap));
+                this.log?.LogSuccess((object)string.Format("\tSuccessfully created game with {0}", (object)settingsCopy.GameMap));
             }
             else
             {
-                this.log?.LogWarning((object)string.Format("\tFailed with {0} on {1}.", (object)r.JoinGame.Error, (object)settings1.GameMap));
+                this.log?.LogWarning((object)string.Format("\tFailed with {0} on {1}.", (object)r.JoinGame.Error, (object)settingsCopy.GameMap));
                 if (!gameClient.TryWaitAvailableMapsRequest(out r, new int?(100000)))
                     this.TerminateWithMessage("Failed to fetch available maps");
                 else
-                    settings1.GameMap = r.AvailableMaps.BattlenetMapNames.First<string>();
+                    settingsCopy.GameMap = r.AvailableMaps.BattlenetMapNames.First<string>();
                 if (!gameClient.TryWaitCreateGameRequest(out r, new int?(100000)))
                     this.TerminateWithMessage("Failed to create game");
                 if (r.JoinGame.Error == ResponseJoinGame.Types.Error.Unset)
-                    this.log?.LogSuccess((object)string.Format("\tSuccessfully created game with {0}", (object)settings1.GameMap));
+                    this.log?.LogSuccess((object)string.Format("\tSuccessfully created game with {0}", (object)settingsCopy.GameMap));
             }
             if (!gameClient.TryWaitJoinGameRequest(out r, new int?(100000)))
                 this.TerminateWithMessage("Failed to join game");
@@ -1332,8 +1333,10 @@ namespace Abathur.Factory
             this.log?.LogWarning((object)"\tManipulating cost of morphed units in UnitType data!");
             ResponseData responseData = this.ManipulateMorphedUnitCost(r.Data);
             if (!gameClient.TryWaitLeaveGameRequest(out r, new int?(100000)))
-                this.TerminateWithMessage("Failed to leave StarCraft II application");
-            this.log?.LogSuccess((object)"\tSuccessfully closed client.");
+                this.TerminateWithMessage("Failed to leave StarCraft II game");
+            this.log?.LogSuccess((object)"\tSuccessfully left game.");
+            gameClient.Disconnect();
+            this.log?.LogSuccess((object)"\tDisconnected from client.");
             return new Essence()
             {
                 DataVersion = dataVersion,

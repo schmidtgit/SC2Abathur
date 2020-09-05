@@ -70,7 +70,6 @@ namespace Abathur.Core.Raw
         }
 
         public bool JoinGame() {
-            _client.PingRequest();
             if(!_client.TryWaitJoinGameRequest(out var joinResponse,TIME_OUT)) {
                 log.LogError("RawManager: Timed out on JoinGame");
                 return false;

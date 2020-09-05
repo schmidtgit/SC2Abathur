@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>NydusNetwork provides raw access to the StarCraft II client using protobuf. Designed for the Abathur Framework but can be used separately.</Description>
+    <Company>AdequateSource</Company>
+    <Authors>SchmidtGit</Authors>
+    <PackageProjectUrl>https://adequatesource.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/schmidtgit/SC2Abathur</RepositoryUrl>
+    <PackageTags>StarCraft</PackageTags>
+    <NeutralLanguage></NeutralLanguage>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

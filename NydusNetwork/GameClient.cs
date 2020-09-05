@@ -80,5 +80,8 @@ namespace NydusNetwork {
             => _connection.RegisterHandler(action, handler);
         public void DeregisterHandler(Action<Response> handler)
             => _connection.DeregisterHandler(handler);
+
+        public void Disconnect()
+            => _connection.Disconnect();
     }
 }

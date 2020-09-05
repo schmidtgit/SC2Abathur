@@ -53,22 +53,22 @@ namespace NydusNetwork.API
             return false;
         }
 
-        public void AsyncSend(Request req) {
-            _socket.SendAsync(new ArraySegment<byte>(req.ToByteArray()),WebSocketMessageType.Binary,true,CancellationToken.None);
-        }
+        public void AsyncSend(Request req)
+            => _socket.SendAsync(new ArraySegment<byte>(req.ToByteArray()),WebSocketMessageType.Binary,true,CancellationToken.None);
+
 
         public bool TryWaitResponse(Request req, out Response response, int wait = TIMEOUT) {
             Response result = null;
-            var marker = new Task(() => { });
-            var action = new Action<Response>(r => { result = r; marker.RunSynchronously(); });
-
-            _handler.RegisterHandler((Response.ResponseOneofCase)req.RequestCase,action);
-            AsyncSend(req);
-
-            marker.Wait(wait);
-            _handler.DeregisterHandler(action);
+            if (_socket.State == WebSocketState.Open) { 
+                var marker = new Task(() => { });
+                var action = new Action<Response>(r => { result = r; marker.RunSynchronously(); });
+                _handler.RegisterHandler((Response.ResponseOneofCase)req.RequestCase,action);
+                AsyncSend(req);
+                marker.Wait(wait);
+                _handler.DeregisterHandler(action);
+            }
             response = result;
-            return response != null;
+            return result != null;
         }
 
         private async Task Receive() {
@@ -85,6 +85,11 @@ namespace NydusNetwork.API
                     _handler.Handle(msg.ResponseCase,msg);
                 }
             }
+        }
+
+        public void Disconnect() {
+            _socket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait();
+            _socket.Dispose();
         }
     }
 }

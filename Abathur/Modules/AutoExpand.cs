@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Abathur.Constants;
 using Abathur.Core;
 using Abathur.Core.Combat;

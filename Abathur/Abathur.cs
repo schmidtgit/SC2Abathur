@@ -5,6 +5,7 @@ using NydusNetwork.API.Protocol;
 using NydusNetwork.Logging;
 using NydusNetwork.Model;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Abathur {
@@ -23,7 +24,7 @@ namespace Abathur {
         private Queue<IReplaceableModule> removedModules = new Queue<IReplaceableModule>();
 
         public Abathur(ILogger logger,IIntelManager intelManager,ICombatManager combatManager,
-            IProductionManager productionManager,IRawManager rawManager,GameSettings gameSettings) {
+            IProductionManager productionManager,IRawManager rawManager,GameSettings gameSettings, IEnumerable<IModule> modules) {
             this.rawManager = rawManager;
             this.log = logger;
             Settings = gameSettings;
@@ -32,17 +33,12 @@ namespace Abathur {
                 combatManager,
                 productionManager
             };
+            Modules = modules.ToList();
         }
 
         public void Initialize() {
             GameConstants.ParticipantRace = Settings.ParticipantRace;
             GameConstants.EnemyRace = Settings.Opponents.Count > 0 ? Settings.Opponents[0].Race : Race.NoRace;
-
-            if(Modules == null) {
-                Modules = new List<IModule>();
-                log.LogWarning("Abathur: Running with 0 modules");
-            }
-
             rawManager.Realtime = Settings.Realtime;
             rawManager.IsHosting = IsHosting;
             rawManager.Initialize();

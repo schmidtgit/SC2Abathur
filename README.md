@@ -1,3 +1,8 @@
+# Questions?
+Feel free to get in contact regarding any issues or questions regarding the API and Abathur.
+I develop on a Windows computer, so there might be some Linux/Mac related issues! Please flag them.
+=> https://www.linkedin.com/in/schmidthansen/ or schmidtgit at protonmail.com
+
 # SC2Abathur
 SC2Abathur is a reboot of Abathur - a modularized AI framework for StarCraft II.
 ![AbathurFramework](https://i.imgur.com/uTU6eKT.gif)

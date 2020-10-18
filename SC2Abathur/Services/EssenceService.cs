@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using NydusNetwork.API.Protocol;
 using NydusNetwork.Logging;
+using NydusNetwork.Model;
 using System;
 using System.IO;
 
@@ -18,9 +19,9 @@ namespace SC2Abathur.Services {
         /// <param name="dataPath">Valid path for data directory used by Abathur</param>
         /// <param name="log">Optional log</param>
         /// <returns></returns>
-        public static Essence LoadOrCreate(string dataPath, ILogger log = null) {
+        public static Essence LoadOrCreate(string dataPath, ILogger log = null, GameSettings gs = null) {
             log?.LogMessage("Checking binary essence file:");
-            ValidateOrCreateBinaryFile(dataPath + "essence.data",() => FetchDataFromClient(log),log);
+            ValidateOrCreateBinaryFile(dataPath + "essence.data",() => FetchDataFromClient(gs, log),log);
             return Load(dataPath + "essence.data",log);
         }
 
@@ -64,9 +65,9 @@ namespace SC2Abathur.Services {
         /// </summary>
         /// <param name="log">Optional log</param>
         /// <returns></returns>
-        private static Essence FetchDataFromClient(ILogger log = null) {
+        private static Essence FetchDataFromClient(GameSettings gs, ILogger log = null) {
             var factory = new EssenceFactory(log);
-            return factory.FetchFromClient(Settings.Defaults.GameSettings);
+            return factory.FetchFromClient(gs);
         }
     }
 }

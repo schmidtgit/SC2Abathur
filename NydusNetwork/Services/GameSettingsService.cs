@@ -64,7 +64,7 @@ namespace NydusNetwork.Services {
                     PlayerSetup = { gs.Opponents,new PlayerSetup { Type = PlayerType.Participant,Race = gs.ParticipantRace } }
                 }
             };
-            if(File.Exists(gs.GameMap) || File.Exists($"{gs.FolderPath}\\Maps\\{gs.GameMap}"))
+            if (File.Exists(gs.GameMap) || File.Exists(Path.Combine(gs.FolderPath, "Maps", gs.GameMap)))
                 r.CreateGame.LocalMap = new LocalMap { MapPath = gs.GameMap };
             else
                 r.CreateGame.BattlenetMapName = gs.GameMap;
@@ -74,11 +74,11 @@ namespace NydusNetwork.Services {
         public static Uri GetUri(this GameSettings gs,bool IsHost)
             => IsHost ? new Uri($"ws://{gs.ConnectionAddress}:{gs.ConnectionServerPort}/sc2api") : new Uri($"ws://{gs.ConnectionAddress}:{gs.ConnectionClientPort}/sc2api");
 
-        public static string WorkingDirectory(this GameSettings gs) => $"{gs.FolderPath}\\Support";
+        public static string WorkingDirectory(this GameSettings gs) => Path.Combine(gs.FolderPath, "Support");
 
         public static string ExecutableClientPath(this GameSettings gs) {
             if(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
-                return Directory.GetDirectories(gs.FolderPath + @"\Versions\",@"Base*")[0] + @"\SC2.app";
+                return Directory.GetDirectories(gs.FolderPath + @"/Versions/",@"Base*")[0] + @"/SC2.app";
             else
                 return Directory.GetDirectories(gs.FolderPath + @"\Versions\",@"Base*")[0] + @"\SC2.exe";
         } 

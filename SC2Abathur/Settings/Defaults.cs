@@ -1,6 +1,4 @@
-﻿using Abathur.Constants;
-using SC2Abathur.Settings;
-using NydusNetwork.API.Protocol;
+﻿using NydusNetwork.API.Protocol;
 using NydusNetwork.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,12 +14,22 @@ namespace SC2Abathur.Settings
         /// <summary>
         /// Used for setting up the modules in the Abathur framework.
         /// </summary>
-        public static AbathurSetup AbathurSetup => new AbathurSetup { IsParallelized = false, Modules = new List<string>{ "RandomDemo", "AutoHarvestGather", "AutoSupply" } };
+        public static AbathurSetup AbathurSetup => new AbathurSetup {
+            IsParallelized = false,
+            Modules = new List<string>{
+                "RandomDemo",
+                "AutoHarvestGather",
+                "AutoSupply"
+            }
+        };
+
         /// <summary>
         /// Stores game related settings used by the StarCraft II client.
         /// </summary>
         public static GameSettings GameSettings => new GameSettings {
-                FolderPath = @"C:\Program Files (x86)\StarCraft II",
+                FolderPath = 
+                    System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX)
+                        ? @"/Applications/StarCraft II" : @"C:\Program Files (x86)\StarCraft II",
                 ConnectionAddress = IPAddress.Loopback.ToString(),
                 ConnectionServerPort = 8165,
                 ConnectionClientPort = 8170,

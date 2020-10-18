@@ -38,8 +38,8 @@ namespace Launcher {
         /// <param name="args">First argument will be used as datapath, second as logpath</param>
         static void Main(string[] args) {
             Console.Title = $"Abathur Framework v{AbathurVersion} and NydusNetwork v{NydusNetworkVersion}";
-            var dataPath = args.Length > 0 ? args[0] : Directory.GetCurrentDirectory() + "\\data\\";
-            var logPath = args.Length > 1 ? args[0] : Directory.GetCurrentDirectory() + "\\log\\";
+            var dataPath = args.Length > 0 ? args[0] : Path.Combine(Directory.GetCurrentDirectory(), "data");
+            var logPath = args.Length > 1 ? args[0] : Path.Combine(Directory.GetCurrentDirectory(), "log");
             new Program().Run(dataPath, logPath);
         }
 
@@ -58,13 +58,13 @@ namespace Launcher {
 
             // Check that the game settings file exist, or create it a default template.
             log?.LogMessage("Checking game settings file:");
-            FileService.ValidateOrCreateJsonFile(dataPath + "gamesettings.json",Defaults.GameSettings,log);
-            GameSettings gameSettings = FileService.ReadFromJson<GameSettings>(dataPath + "gamesettings.json",log);
+            FileService.ValidateOrCreateJsonFile(Path.Combine(dataPath, "gamesettings.json") ,Defaults.GameSettings,log);
+            GameSettings gameSettings = FileService.ReadFromJson<GameSettings>(Path.Combine(dataPath, "gamesettings.json"), log);
 
             // Load the Abathur setup file, this file is used to add/remove modules to the framework
             log?.LogMessage("Checking setup file:");
-            FileService.ValidateOrCreateJsonFile(dataPath + "setup.json",Defaults.AbathurSetup,log);
-            AbathurSetup abathurSetup = FileService.ReadFromJson<AbathurSetup>(dataPath + "setup.json",log);
+            FileService.ValidateOrCreateJsonFile(Path.Combine(dataPath, "setup.json"), Defaults.AbathurSetup,log);
+            AbathurSetup abathurSetup = FileService.ReadFromJson<AbathurSetup>(Path.Combine(dataPath, "setup.json"), log);
 
             // Load or create the 'essence file' - a file containing UnitTypeData, AbilityTypeData, BuffData, UpgradeData and manually coded tech-trees for each race.
             var essence = EssenceService.LoadOrCreate(dataPath,log);

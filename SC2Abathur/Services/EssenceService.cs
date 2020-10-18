@@ -3,6 +3,7 @@ using Google.Protobuf;
 using NydusNetwork.API.Protocol;
 using NydusNetwork.Logging;
 using NydusNetwork.Model;
+using SC2Abathur.Settings;
 using System;
 using System.IO;
 
@@ -21,8 +22,8 @@ namespace SC2Abathur.Services {
         /// <returns></returns>
         public static Essence LoadOrCreate(string dataPath, ILogger log = null, GameSettings gs = null) {
             log?.LogMessage("Checking binary essence file:");
-            ValidateOrCreateBinaryFile(dataPath + "essence.data",() => FetchDataFromClient(gs, log),log);
-            return Load(dataPath + "essence.data",log);
+            ValidateOrCreateBinaryFile(Path.Combine(dataPath, "essence.data"), gs ?? Defaults.GameSettings, log);
+            return Load(Path.Combine(dataPath, "essence.data"), log);
         }
 
         /// <summary>
@@ -46,15 +47,14 @@ namespace SC2Abathur.Services {
         /// <param name="path">Path to validate</param>
         /// <param name="content">Function to get content in case the file does not exist</param>
         /// <param name="log">Optional log</param>
-        private static void ValidateOrCreateBinaryFile<T>(string path,Func<T> content,ILogger log = null) where T : IMessage {
+        private static void ValidateOrCreateBinaryFile(string path, GameSettings gs, ILogger log = null) {
             try {
                 if(File.Exists(path)) {
                     log?.LogSuccess($"\tFOUND: {path}");
                 } else {
-                    var msg = content.Invoke();
-                    FileStream stream = File.Create(path);
+                    var msg = FetchDataFromClient(gs, log);
+                    using FileStream stream = File.Create(path);
                     msg.WriteTo(stream);
-                    stream.Close();
                     log?.LogWarning($"\tCREATED: {path}");
                 }
             } catch(Exception e) { log.LogError($"\tFAILED: {e.Message}"); }

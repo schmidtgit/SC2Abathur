@@ -33,7 +33,12 @@ namespace NydusNetwork {
 
         public void LaunchClient(bool asHost) {
             _isHost = asHost;
-            Process.Start(new ProcessStartInfo { FileName = _settings.ExecutableClientPath(),Arguments = _settings.ToArguments(_isHost),WorkingDirectory = _settings.WorkingDirectory() });
+            Process.Start(
+                new ProcessStartInfo {
+                    FileName = _settings.ExecutableClientPath(),
+                    Arguments = _settings.ToArguments(_isHost),
+                    WorkingDirectory = _settings.WorkingDirectory(),
+                });
         }
         public bool ConnectToClient()
             => _connection.Connect(_settings.GetUri(_isHost));

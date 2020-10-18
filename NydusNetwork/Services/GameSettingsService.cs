@@ -78,7 +78,7 @@ namespace NydusNetwork.Services {
 
         public static string ExecutableClientPath(this GameSettings gs) {
             if(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
-                return Directory.GetDirectories(gs.FolderPath + @"/Versions/",@"Base*")[0] + @"/SC2.app";
+                return Directory.GetDirectories(gs.FolderPath + @"/Versions/",@"Base*")[0] + @"/SC2.app/Contents/MacOS/SC2";
             else
                 return Directory.GetDirectories(gs.FolderPath + @"\Versions\",@"Base*")[0] + @"\SC2.exe";
         } 

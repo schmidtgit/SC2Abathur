@@ -67,7 +67,7 @@ namespace Launcher {
             AbathurSetup abathurSetup = FileService.ReadFromJson<AbathurSetup>(Path.Combine(dataPath, "setup.json"), log);
 
             // Load or create the 'essence file' - a file containing UnitTypeData, AbilityTypeData, BuffData, UpgradeData and manually coded tech-trees for each race.
-            var essence = EssenceService.LoadOrCreate(dataPath,log);
+            var essence = EssenceService.LoadOrCreate(dataPath,log,gameSettings);
 
             // If a log path have been specified, check the directory and change add a filelogger (writes to files)
             if(logPath != null) {

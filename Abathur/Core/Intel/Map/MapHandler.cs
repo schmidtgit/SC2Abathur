@@ -2,10 +2,8 @@
 using System;
 using System.Collections;
 
-namespace Abathur.Core.Intel.Map
-{
-    public abstract class MapHandler
-    {
+namespace Abathur.Core.Intel.Map {
+    public abstract class MapHandler {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -27,6 +25,6 @@ namespace Abathur.Core.Intel.Map
         }
 
         public static MapHandler Instantiate(int w, int h)
-            => new BitMapHandler { Width = w, Height = h, _data = new BitArray(w*h) };
+            => new BitMapHandler { Width = w, Height = h, _data = new BitArray(w * h) };
     }
 }

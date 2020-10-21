@@ -9,10 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Abathur.Factory
-{
-    public class EssenceFactory
-    {
+namespace Abathur.Factory {
+    public class EssenceFactory {
         private ILogger log;
         private const int TIMEOUT = 100000;
         public static Dictionary<uint, uint[]> UnitProducers = new Dictionary<uint, uint[]>()
@@ -1293,8 +1291,7 @@ namespace Abathur.Factory
 
         public EssenceFactory(ILogger log = null) => this.log = log;
 
-        public Essence FetchFromClient(GameSettings settings)
-        {
+        public Essence FetchFromClient(GameSettings settings) {
             this.log?.LogWarning((object)"\tFetching data from Client (THIS MIGHT TAKE A WHILE)");
             GameSettings settingsCopy = (GameSettings)settings.Clone();
             GameClient gameClient = new GameClient(settingsCopy);
@@ -1303,12 +1300,9 @@ namespace Abathur.Factory
             Response r;
             if (!gameClient.TryWaitCreateGameRequest(out r, new int?(100000)))
                 this.TerminateWithMessage("Failed to create game");
-            if (r.CreateGame.Error == ResponseCreateGame.Types.Error.Unset)
-            {
+            if (r.CreateGame.Error == ResponseCreateGame.Types.Error.Unset) {
                 this.log?.LogSuccess((object)string.Format("\tSuccessfully created game with {0}", (object)settingsCopy.GameMap));
-            }
-            else
-            {
+            } else {
                 this.log?.LogWarning((object)string.Format("\tFailed with {0} on {1}.", (object)r.JoinGame.Error, (object)settingsCopy.GameMap));
                 if (!gameClient.TryWaitAvailableMapsRequest(out r, new int?(100000)))
                     this.TerminateWithMessage("Failed to fetch available maps");
@@ -1337,8 +1331,7 @@ namespace Abathur.Factory
             this.log?.LogSuccess((object)"\tSuccessfully left game.");
             gameClient.Disconnect();
             this.log?.LogSuccess((object)"\tDisconnected from client.");
-            return new Essence()
-            {
+            return new Essence() {
                 DataVersion = dataVersion,
                 DataBuild = dataBuild,
                 Abilities = {
@@ -1371,27 +1364,19 @@ namespace Abathur.Factory
             };
         }
 
-        private ResponseData ManipulateMorphedUnitCost(ResponseData data)
-        {
+        private ResponseData ManipulateMorphedUnitCost(ResponseData data) {
             RepeatedField<UnitTypeData> source = data.Units.Clone();
-            foreach (UnitTypeData unit in data.Units)
-            {
-                if (GameConstants.IsMorphed(unit.UnitId))
-                {
-                    if (unit.UnitId == 105U)
-                    {
+            foreach (UnitTypeData unit in data.Units) {
+                if (GameConstants.IsMorphed(unit.UnitId)) {
+                    if (unit.UnitId == 105U) {
                         unit.MineralCost *= 2U;
                         unit.VespeneCost *= 2U;
                         unit.FoodRequired *= 2f;
-                    }
-                    else
-                    {
+                    } else {
                         uint[] p;
-                        if (EssenceFactory.UnitProducers.TryGetValue(unit.UnitId, out p))
-                        {
+                        if (EssenceFactory.UnitProducers.TryGetValue(unit.UnitId, out p)) {
                             UnitTypeData unitTypeData = source.FirstOrDefault<UnitTypeData>((Func<UnitTypeData, bool>)(u => (int)u.UnitId == (int)((IEnumerable<uint>)p).FirstOrDefault<uint>()));
-                            if (unitTypeData != null)
-                            {
+                            if (unitTypeData != null) {
                                 unit.MineralCost -= unitTypeData.MineralCost;
                                 unit.VespeneCost -= unitTypeData.VespeneCost;
                                 unit.FoodRequired -= unitTypeData.FoodRequired;
@@ -1404,12 +1389,10 @@ namespace Abathur.Factory
         }
 
         public ICollection<MultiValuePair> CreateValuePair(
-          IDictionary<uint, uint[]> dictionary)
-        {
+          IDictionary<uint, uint[]> dictionary) {
             List<MultiValuePair> multiValuePairList = new List<MultiValuePair>();
             foreach (KeyValuePair<uint, uint[]> keyValuePair in (IEnumerable<KeyValuePair<uint, uint[]>>)dictionary)
-                multiValuePairList.Add(new MultiValuePair()
-                {
+                multiValuePairList.Add(new MultiValuePair() {
                     Key = keyValuePair.Key,
                     Values = {
             (IEnumerable<uint>) keyValuePair.Value
@@ -1419,20 +1402,17 @@ namespace Abathur.Factory
         }
 
         public ICollection<ValuePair> CreateValuePair(
-          IDictionary<uint, uint> dictionary)
-        {
+          IDictionary<uint, uint> dictionary) {
             List<ValuePair> valuePairList = new List<ValuePair>();
             foreach (KeyValuePair<uint, uint> keyValuePair in (IEnumerable<KeyValuePair<uint, uint>>)dictionary)
-                valuePairList.Add(new ValuePair()
-                {
+                valuePairList.Add(new ValuePair() {
                     Key = keyValuePair.Key,
                     Value = keyValuePair.Value
                 });
             return (ICollection<ValuePair>)valuePairList;
         }
 
-        private void TerminateWithMessage(string message)
-        {
+        private void TerminateWithMessage(string message) {
             this.log?.LogError((object)string.Format("{0} - PRESS ANY KEY TO TERMINATE", (object)message));
             Console.ReadKey();
             Environment.Exit(-1);

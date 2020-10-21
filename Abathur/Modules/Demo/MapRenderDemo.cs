@@ -5,10 +5,8 @@ using Abathur.Core;
 using Abathur.Core.Intel.Map;
 using NydusNetwork.Model;
 
-namespace Abathur.Modules.Demo
-{
-    public class MapRenderDemo : IModule
-    {
+namespace Abathur.Modules.Demo {
+    public class MapRenderDemo : IModule {
         private IAbathur _abathur;
         private IIntelManager _intel;
         private GameMap _map;
@@ -18,15 +16,13 @@ namespace Abathur.Modules.Demo
         private List<String> _maps;
         private GameSettings _gameSettings;
 
-        public MapRenderDemo(IIntelManager intel, GameSettings gameSettings, IAbathur abathur)
-        {
+        public MapRenderDemo(IIntelManager intel, GameSettings gameSettings, IAbathur abathur) {
             _intel = intel;
             _gameSettings = gameSettings;
             _abathur = abathur;
         }
 
-        public void Initialize()
-        {
+        public void Initialize() {
             _maps = new List<string>
             {
                 "Abiogenesis LE",
@@ -70,22 +66,20 @@ namespace Abathur.Modules.Demo
             };
         }
 
-        public void OnStart()
-        {
+        public void OnStart() {
             _iteration++;
             _fileName = "MapRenders/Maprender_";
             _rendered = false;
         }
 
         public void OnStep() {
-            if (!_rendered && _map.Regions!=null)
-            {
+            if (!_rendered && _map.Regions != null) {
                 _map.RenderRegionsToDesktop(_fileName + _iteration);
-                Console.WriteLine("rendered: " + _fileName+_iteration);
+                Console.WriteLine("rendered: " + _fileName + _iteration);
                 _rendered = true;
             }
 
-            if(_rendered && _maps.Count != 0) {
+            if (_rendered && _maps.Count != 0) {
                 var nextMap = _maps.First();
                 _maps.Remove(nextMap);
                 _gameSettings.GameMap = nextMap;
@@ -93,7 +87,7 @@ namespace Abathur.Modules.Demo
             }
         }
 
-        public void OnGameEnded() {}
-        public void OnRestart(){}
+        public void OnGameEnded() { }
+        public void OnRestart() { }
     }
 }

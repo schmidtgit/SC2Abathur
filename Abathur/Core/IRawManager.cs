@@ -18,7 +18,7 @@ namespace Abathur.Core {
         /// <param name="req">Request to send</param>
         /// <param name="response">Response received</param>
         /// <returns>False if request timed out</returns>
-        bool TryWaitRawRequest(Request req,out Response response);
+        bool TryWaitRawRequest(Request req, out Response response);
 
         /// <summary>
         /// Send request to StarCraft II client immediately.
@@ -27,7 +27,7 @@ namespace Abathur.Core {
         /// <param name="response">Response received</param>
         /// <param name="timeout">Set timeout value in ms</param>
         /// <returns>False if request timed out</returns>
-        bool TryWaitRawRequest(Request req,out Response response,int timeout);
+        bool TryWaitRawRequest(Request req, out Response response, int timeout);
 
         /// <summary>
         /// Send observation request and wait for the response.
@@ -36,7 +36,7 @@ namespace Abathur.Core {
         /// <param name="response"></param>
         /// <param name="gameloop"></param>
         /// <returns>False if request timed out</returns>
-        bool TryWaitObservationRequest(out Response response,uint gameloop);
+        bool TryWaitObservationRequest(out Response response, uint gameloop);
 
         /// <summary>
         /// Queue actions to send at the end of current game loop.
@@ -52,7 +52,7 @@ namespace Abathur.Core {
         /// <summary>
         /// True if hosting - do not change mid-game.
         /// </summary>
-        bool IsHosting { get; set; } 
+        bool IsHosting { get; set; }
 
         /// <summary>
         /// Send step request.

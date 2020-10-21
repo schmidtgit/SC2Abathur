@@ -2,28 +2,27 @@
 using Abathur.Model;
 using NydusNetwork.API.Protocol;
 
-namespace Abathur.Core.Production
-{
+namespace Abathur.Core.Production {
     internal class ProductionOrder : IPosition {
         private UnitTypeData _unit;
         public UnitTypeData Unit {
             get { return _unit; }
             set {
                 _unit = value;
-                if(GameConstants.IsAddon(Unit.UnitId))
+                if (GameConstants.IsAddon(Unit.UnitId))
                     Type = BuildType.AddOn;
-                else if(GameConstants.IsMorphed(Unit.UnitId))
+                else if (GameConstants.IsMorphed(Unit.UnitId))
                     Type = BuildType.Morphed;
-                else if(Unit.Attributes.Contains(Attribute.Structure))
+                else if (Unit.Attributes.Contains(Attribute.Structure))
                     Type = BuildType.Structure;
                 else
                     Type = BuildType.Unit;
 
-                if(GameConstants.RequiresBarrackTechlab(_unit.UnitId))
+                if (GameConstants.RequiresBarrackTechlab(_unit.UnitId))
                     RequiredAddOn = BlizzardConstants.Unit.BarracksTechLab;
-                else if(GameConstants.RequiresFactoryTechlab(_unit.UnitId))
+                else if (GameConstants.RequiresFactoryTechlab(_unit.UnitId))
                     RequiredAddOn = BlizzardConstants.Unit.FactoryTechLab;
-                else if(GameConstants.RequiresStarportTechLab(_unit.UnitId))
+                else if (GameConstants.RequiresStarportTechLab(_unit.UnitId))
                     RequiredAddOn = BlizzardConstants.Unit.StarportTechLab;
             }
         }
@@ -33,7 +32,7 @@ namespace Abathur.Core.Production
             set {
                 _research = value;
                 Type = BuildType.Research;
-                if(_unit != null) throw new System.ArgumentException("Production Order must be either an Unit or Research");
+                if (_unit != null) throw new System.ArgumentException("Production Order must be either an Unit or Research");
             }
         }
         public Point2D Position { get; set; }
@@ -48,5 +47,5 @@ namespace Abathur.Core.Production
         public enum OrderStatus { Queued, Commissioned, Producing, Built }
         Point2D IPosition.Point => Position;
     }
-    
+
 }

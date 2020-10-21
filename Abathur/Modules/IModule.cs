@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace Abathur.Modules
-{
-    public interface IModule
-    {
+namespace Abathur.Modules {
+    public interface IModule {
         void Initialize();
         /// <summary>
         /// handles what must happen when a Starcraft 2 game starts. 

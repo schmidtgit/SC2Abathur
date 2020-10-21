@@ -6,8 +6,7 @@ using NydusNetwork.API.Protocol;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Abathur.Modules
-{
+namespace Abathur.Modules {
     class AutoHarvestGather : IModule {
         private IIntelManager intelManager;
         private IRawManager rawManager;
@@ -17,10 +16,10 @@ namespace Abathur.Modules
         }
 
         private void ColonyCheck() {
-            foreach(var colony in intelManager.Colonies) {
-                if(colony.Workers.Count == 0)
+            foreach (var colony in intelManager.Colonies) {
+                if (colony.Workers.Count == 0)
                     continue;
-                if(intelManager.Common.IdleWorkerCount != 0)
+                if (intelManager.Common.IdleWorkerCount != 0)
                     IdleHarvestMinerals(colony);
                 DesiredVespeneWorkerCount(colony);
             }
@@ -29,7 +28,7 @@ namespace Abathur.Modules
 
         private void IdleHarvestMinerals(IColony colony) {
             var workers = colony.Workers.Where(w => w.Orders.Count == 0 && w.Alliance == Alliance.Self);
-            if(workers.Any())
+            if (workers.Any())
                 AssignWorkersToClosestMineral(colony, workers);
         }
 
@@ -37,34 +36,34 @@ namespace Abathur.Modules
             var refineries = colony.Structures.Where(u => GameConstants.IsVespeneGeyserBuilding(u.UnitType) && u.Alliance == Alliance.Self);
             var ideal = System.Math.Min(refineries.Sum(r => r.IdealHarvesters), colony.DesiredVespeneWorkers);
             var current = refineries.Sum(r => r.AssignedHarvesters);
-            if(current == ideal) return;
-            if(current > ideal) {
-                var workers = GetVespeneWorkers(colony,current - ideal,refineries.Select(r => r.Tag));
-                AssignWorkersToClosestMineral(colony,workers);
+            if (current == ideal) return;
+            if (current > ideal) {
+                var workers = GetVespeneWorkers(colony, current - ideal, refineries.Select(r => r.Tag));
+                AssignWorkersToClosestMineral(colony, workers);
             } else {
-                var workers = GetMineralWorkers(colony,ideal - current);
-                while(workers.Count != 0) {
+                var workers = GetMineralWorkers(colony, ideal - current);
+                while (workers.Count != 0) {
                     var target = refineries.FirstOrDefault(v => v.IdealHarvesters > v.AssignedHarvesters);
-                    HarvestGather(target.Tag,workers.Dequeue());
+                    HarvestGather(target.Tag, workers.Dequeue());
                     target.AssignedHarvesters++;
                 }
             }
         }
 
         private void AssignWorkersToClosestMineral(IColony colony, IEnumerable<IUnit> units) {
-            foreach(var w in units) {
+            foreach (var w in units) {
                 var mineral = w.GetClosest(colony.Minerals);
-                HarvestGather(mineral.Tag,w);
+                HarvestGather(mineral.Tag, w);
             }
         }
 
-        private Queue<IUnit> GetMineralWorkers(IColony colony,int count) {
+        private Queue<IUnit> GetMineralWorkers(IColony colony, int count) {
             var minerals = colony.Minerals.Select(m => m.Tag);
             return new Queue<IUnit>(colony.Workers.Where(u => u.Orders.Count == 0 || minerals.Contains(u.Orders.First().TargetUnitTag)).Take(count));
         }
-        private Queue<IUnit> GetVespeneWorkers(IColony colony,int count, IEnumerable<ulong> refineries) => new Queue<IUnit>(colony.Workers.Where(u => u.Orders.Count == 0 || refineries.Contains(u.Orders.First().TargetUnitTag)).Take(count));
+        private Queue<IUnit> GetVespeneWorkers(IColony colony, int count, IEnumerable<ulong> refineries) => new Queue<IUnit>(colony.Workers.Where(u => u.Orders.Count == 0 || refineries.Contains(u.Orders.First().TargetUnitTag)).Take(count));
 
-        private void HarvestGather(ulong target,params IUnit[] workers)
+        private void HarvestGather(ulong target, params IUnit[] workers)
             => rawManager.QueueActions(
                 new Action {
                     ActionRaw = new ActionRaw {
@@ -78,7 +77,7 @@ namespace Abathur.Modules
                 });
 
         void IModule.Initialize() { }
-        void IModule.OnStart() {}
+        void IModule.OnStart() { }
         void IModule.OnStep() => ColonyCheck();
         void IModule.OnGameEnded() { }
         void IModule.OnRestart() { }

@@ -18,25 +18,25 @@ namespace Abathur.Constants {
         private static Race _participantRace;
         private static void UpdateRace(Race race) {
             _participantRace = race;
-            switch(race) {
+            switch (race) {
                 case (Race.Terran):
-                    RaceHarvestGatherAbility = 295;
-                    RaceRefinery = BlizzardConstants.Unit.Refinery;
-                    RaceHeadquarter = BlizzardConstants.Unit.CommandCenter;
-                    RaceSupply = BlizzardConstants.Unit.SupplyDepot;
-                    break;
+                RaceHarvestGatherAbility = 295;
+                RaceRefinery = BlizzardConstants.Unit.Refinery;
+                RaceHeadquarter = BlizzardConstants.Unit.CommandCenter;
+                RaceSupply = BlizzardConstants.Unit.SupplyDepot;
+                break;
                 case (Race.Protoss):
-                    RaceHarvestGatherAbility = 298;
-                    RaceRefinery = BlizzardConstants.Unit.Assimilator;
-                    RaceHeadquarter = BlizzardConstants.Unit.Nexus;
-                    RaceSupply = BlizzardConstants.Unit.Pylon;
-                    break;
+                RaceHarvestGatherAbility = 298;
+                RaceRefinery = BlizzardConstants.Unit.Assimilator;
+                RaceHeadquarter = BlizzardConstants.Unit.Nexus;
+                RaceSupply = BlizzardConstants.Unit.Pylon;
+                break;
                 case (Race.Zerg):
-                    RaceHarvestGatherAbility = 1183;
-                    RaceRefinery = BlizzardConstants.Unit.Extractor;
-                    RaceHeadquarter = BlizzardConstants.Unit.Hatchery;
-                    RaceSupply = BlizzardConstants.Unit.Overlord;
-                    break;
+                RaceHarvestGatherAbility = 1183;
+                RaceRefinery = BlizzardConstants.Unit.Extractor;
+                RaceHeadquarter = BlizzardConstants.Unit.Hatchery;
+                RaceSupply = BlizzardConstants.Unit.Overlord;
+                break;
             }
         }
 
@@ -117,14 +117,14 @@ namespace Abathur.Constants {
         /// <param name="id">UnitType ID as defined by Blizzard</param>
         /// <returns>Returns true if the ID is of the type worker.</returns>
         public static bool IsWorker(uint id) => id == BlizzardConstants.Unit.SCV || id == BlizzardConstants.Unit.Probe || id == BlizzardConstants.Unit.Drone || id == BlizzardConstants.Unit.DroneBurrowed;
-       
+
         /// <summary>
         /// Minerals have different IDs depending on the game map (due to theme)
         /// </summary>
         /// <param name="id">UnitType ID as defined by Blizzard</param>
         /// <returns>Returns true if the ID is of the type mineral field.</returns>
         public static bool IsMineralField(uint id) => id == 146 || id == 147 || id == 341 || id == 483 || id == 885 || id == 884 || id == 665 || id == 666;
-        
+
         /// <summary>
         /// Vespene Geysers have different IDs depending on the game map (due to theme)
         /// </summary>
@@ -138,7 +138,7 @@ namespace Abathur.Constants {
         /// <param name="id">UnitType ID as defined by Blizzard</param>
         /// <returns>True if the ID is a refinery, assimilator or extractor</returns>
         public static bool IsVespeneGeyserBuilding(uint id) => id == 20 || id == 61 || id == 88;
-        
+
         /// <summary>
         /// XelNagaTower (149)
         /// </summary>
@@ -161,7 +161,7 @@ namespace Abathur.Constants {
         /// <param name="id">UnitType ID as defined by Blizzard</param>
         /// <returns>Returns true if the ID is of the type tech lab.</returns>
         public static bool IsTechLab(uint id) => id == BlizzardConstants.Unit.TechLab || id == BlizzardConstants.Unit.BarracksTechLab || id == BlizzardConstants.Unit.FactoryTechLab || id == BlizzardConstants.Unit.StarportTechLab;
-        
+
         /// <summary>
         /// Reactor (6), BarracksReactor (38), FactoryReactor (40) or StarPortReactor (42)
         /// </summary>
@@ -191,7 +191,7 @@ namespace Abathur.Constants {
         public static bool IsHeadquarter(uint id) => id == BlizzardConstants.Unit.Nexus ||
             id == BlizzardConstants.Unit.Hatchery || id == BlizzardConstants.Unit.Lair || id == BlizzardConstants.Unit.Hive ||
             id == BlizzardConstants.Unit.CommandCenter || id == BlizzardConstants.Unit.OrbitalCommand || id == BlizzardConstants.Unit.PlanetaryFortress;
-        
+
         /// <summary>
         /// Check if the unit ID is a techlab or reactor.
         /// </summary>
@@ -212,14 +212,14 @@ namespace Abathur.Constants {
         /// <param name="id">UnitType ID as defined by Blizzard</param>
         /// <returns>Returns true if the ID is of the type requires attached techlab</returns>
         public static bool RequiresTechLab(uint id) => RequiresBarrackTechlab(id) || RequiresFactoryTechlab(id) || RequiresStarportTechLab(id);
-        
+
         /// <summary>
         /// Check if the unit ID requires barracks with techlab.
         /// </summary>
         /// <param name="id">UnitType ID as defined by Blizzard</param>
         /// <returns>Returns true if the ID is of the type requires attached techlab</returns>
         public static bool RequiresBarrackTechlab(uint id) => id == BlizzardConstants.Unit.Marauder || id == BlizzardConstants.Unit.Ghost;
-        
+
         /// <summary>
         /// Check if the unit ID requires factory with techlab.
         /// </summary>

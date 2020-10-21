@@ -29,7 +29,7 @@ namespace Abathur.Core {
         /// <summary>
         /// Register handlers for events.
         /// </summary>
-        CaseHandler<Case,IUnit> Handler { get; }
+        CaseHandler<Case, IUnit> Handler { get; }
 
         /// <summary>
         /// Get all upgrades currently researched.
@@ -57,7 +57,7 @@ namespace Abathur.Core {
         /// <param name="tag">Unique unit tag</param>
         /// <param name="unit">The unit, if found</param>
         /// <returns>True if the unit could be found</returns>
-        bool TryGetUnitSelf(ulong tag,out IUnit unit);
+        bool TryGetUnitSelf(ulong tag, out IUnit unit);
 
         /// <summary>
         /// Get all units owned by participant.
@@ -72,7 +72,7 @@ namespace Abathur.Core {
         /// <param name="tag">Unique unit tag</param>
         /// <param name="unit">The worker, if found</param>
         /// <returns>True if the worker could be found</returns>
-        bool TryGetWorkerSelf(ulong tag,out IUnit unit);
+        bool TryGetWorkerSelf(ulong tag, out IUnit unit);
 
         /// <summary>
         /// Get worker, structure or unit with given tag.
@@ -108,7 +108,7 @@ namespace Abathur.Core {
         /// <param name="tag">Unique unit tag</param>
         /// <param name="unit">Unit if exist</param>
         /// <returns>True if destructible with tag exist</returns>
-        bool TryGetDestructible(ulong tag,out IUnit unit);
+        bool TryGetDestructible(ulong tag, out IUnit unit);
 
         /// <summary>
         /// Get all destructibles.

@@ -6,8 +6,7 @@ using Abathur.Repositories;
 using NydusNetwork.API.Protocol;
 using System.Linq;
 
-namespace Abathur.Modules
-{
+namespace Abathur.Modules {
     class CrazySupply : IModule {
         private IIntelManager intelManager;
         private IProductionManager productionManager;
@@ -21,20 +20,20 @@ namespace Abathur.Modules
             rep = squadRepository;
         }
         void IModule.OnStep() {
-            if(intelManager.ProductionQueue.Where(u => u.UnitId == GameConstants.RaceSupply).Count() > 3)
+            if (intelManager.ProductionQueue.Where(u => u.UnitId == GameConstants.RaceSupply).Count() > 3)
                 return;
             productionManager.QueueUnit(GameConstants.RaceSupply, null, 0);
-            combatManager.UseTargetlessAbility(BlizzardConstants.Ability.SupplyDepotLower,depots);
+            combatManager.UseTargetlessAbility(BlizzardConstants.Ability.SupplyDepotLower, depots);
         }
 
         private void Handle(IUnit unit) {
-            if(unit.UnitType == BlizzardConstants.Unit.SupplyDepot)
+            if (unit.UnitType == BlizzardConstants.Unit.SupplyDepot)
                 depots.AddUnit(unit);
         }
         void IModule.Initialize() { }
         void IModule.OnStart() {
             depots = rep.Create("MASTER DEPOTS <3");
-            intelManager.Handler.RegisterHandler(Case.StructureAddedSelf,u => Handle(u));
+            intelManager.Handler.RegisterHandler(Case.StructureAddedSelf, u => Handle(u));
         }
         void IModule.OnGameEnded() { }
         void IModule.OnRestart() { }

@@ -4,16 +4,18 @@ using Abathur.Extensions;
 using Abathur.Model;
 using NydusNetwork.API.Protocol;
 
-namespace Abathur.Core.Intel
-{
+namespace Abathur.Core.Intel {
     internal class IntelUnit : IUnit {
         public uint lastSeen;
         private Unit data;
         public uint FramesSinceSeen => GameConstants.GameLoop - lastSeen;
         public Unit DataSource {
             get { return data; }
-            set { lastSeen = GameConstants.GameLoop;
-                data = value; } }
+            set {
+                lastSeen = GameConstants.GameLoop;
+                data = value;
+            }
+        }
         public IntelUnit(Unit unit) { data = unit; }
 
         public ulong AddOnTag => data.AddOnTag;
@@ -87,7 +89,7 @@ namespace Abathur.Core.Intel
 
         public override bool Equals(object obj) {
             var unit = obj as IUnit;
-            if(unit == null) return false;
+            if (unit == null) return false;
             return unit.Tag == this.Tag;
         }
         public override int GetHashCode() => (int)Tag;

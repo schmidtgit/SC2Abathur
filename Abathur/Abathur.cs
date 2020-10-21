@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace Abathur {
     public class Abathur : IAbathur {
         public Status Status => rawManager.Status;
-        public bool IsParallelized              { get; set; }
-        public bool IsHosting                   { get; set; }
-        public GameSettings Settings            { get; set; }
-        public List<IModule> Modules            { get; set; }
+        public bool IsParallelized { get; set; }
+        public bool IsHosting { get; set; }
+        public GameSettings Settings { get; set; }
+        public List<IModule> Modules { get; set; }
 
         private List<IModule> CoreModules;
         private IRawManager rawManager;
@@ -22,8 +22,8 @@ namespace Abathur {
         private Queue<IReplaceableModule> addedModules = new Queue<IReplaceableModule>();
         private Queue<IReplaceableModule> removedModules = new Queue<IReplaceableModule>();
 
-        public Abathur(ILogger logger,IIntelManager intelManager,ICombatManager combatManager,
-            IProductionManager productionManager,IRawManager rawManager,GameSettings gameSettings) {
+        public Abathur(ILogger logger, IIntelManager intelManager, ICombatManager combatManager,
+            IProductionManager productionManager, IRawManager rawManager, GameSettings gameSettings) {
             this.rawManager = rawManager;
             this.log = logger;
             Settings = gameSettings;
@@ -38,7 +38,7 @@ namespace Abathur {
             GameConstants.ParticipantRace = Settings.ParticipantRace;
             GameConstants.EnemyRace = Settings.Opponents.Count > 0 ? Settings.Opponents[0].Race : Race.NoRace;
 
-            if(Modules == null) {
+            if (Modules == null) {
                 Modules = new List<IModule>();
                 log.LogWarning("Abathur: Running with 0 modules");
             }
@@ -51,14 +51,14 @@ namespace Abathur {
         }
 
         public void CreateGame() {
-            if(Status == Status.InGame)
+            if (Status == Status.InGame)
                 rawManager.LeaveGame();
-            if(!rawManager.CreateGame())
+            if (!rawManager.CreateGame())
                 log.LogWarning("Abathur: Failed at starting game.");
         }
 
         public void Run() {
-            if(!rawManager.JoinGame())
+            if (!rawManager.JoinGame())
                 return;
             GameLoop();
         }
@@ -66,8 +66,8 @@ namespace Abathur {
         public void Restart() {
             rawManager.Restart();
             CoreModules.ForEach(c => c.OnRestart());
-            if(IsParallelized)
-                Parallel.ForEach(Modules,m => m.OnRestart());
+            if (IsParallelized)
+                Parallel.ForEach(Modules, m => m.OnRestart());
             else
                 Modules.ForEach(m => m.OnRestart());
             GameLoop();
@@ -76,16 +76,16 @@ namespace Abathur {
         public void GameLoop() {
             CoreModules.ForEach(c => c.OnStart());
             ChangeModules();
-            if(IsParallelized)
-                Parallel.ForEach(Modules,m => m.OnStart());
+            if (IsParallelized)
+                Parallel.ForEach(Modules, m => m.OnStart());
             else
                 Modules.ForEach(m => m.OnStart());
 
             rawManager.Step();
-            while(Status == Status.InGame) {
+            while (Status == Status.InGame) {
                 CoreModules.ForEach(c => c.OnStep());
-                if(IsParallelized)
-                    Parallel.ForEach(Modules,m => m.OnStep());
+                if (IsParallelized)
+                    Parallel.ForEach(Modules, m => m.OnStep());
                 else
                     Modules.ForEach(m => m.OnStep());
                 ChangeModules();
@@ -93,16 +93,16 @@ namespace Abathur {
             }
 
             CoreModules.ForEach(c => c.OnGameEnded());
-            if(IsParallelized)
-                Parallel.ForEach(Modules,m => m.OnGameEnded());
+            if (IsParallelized)
+                Parallel.ForEach(Modules, m => m.OnGameEnded());
             else
                 Modules.ForEach(m => m.OnGameEnded());
         }
 
         private void ChangeModules() {
-            lock(addedModules)
-                while(addedModules.TryDequeue(out var module))
-                    if(!Modules.Contains(module)) {
+            lock (addedModules)
+                while (addedModules.TryDequeue(out var module))
+                    if (!Modules.Contains(module)) {
                         module.OnAdded();
                         Modules.Add(module);
                     }
@@ -110,9 +110,9 @@ namespace Abathur {
                     else
                         log.LogWarning($"Abathur: (Add Module) Gameloop already contains {module.GetType().Name}");
 #endif
-            lock(removedModules)
-                while(removedModules.TryDequeue(out var module))
-                    if(Modules.Contains(module)) {
+            lock (removedModules)
+                while (removedModules.TryDequeue(out var module))
+                    if (Modules.Contains(module)) {
                         module.OnRemoved();
                         Modules.Remove(module);
                     }
@@ -123,12 +123,12 @@ namespace Abathur {
         }
 
         public void AddToGameloop(IReplaceableModule module) {
-            lock(addedModules)
+            lock (addedModules)
                 addedModules.Enqueue(module);
         }
 
         public void RemoveFromGameloop(IReplaceableModule module) {
-            lock(removedModules)
+            lock (removedModules)
                 removedModules.Enqueue(module);
         }
     }

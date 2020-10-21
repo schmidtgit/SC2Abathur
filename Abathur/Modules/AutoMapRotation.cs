@@ -6,8 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Abathur.Modules
-{
+namespace Abathur.Modules {
     class AutoMapRotation : IModule {
         private ILogger log;
         private IAbathur abathur;
@@ -62,24 +61,24 @@ namespace Abathur.Modules
         }
 
         public void Initialize() {
-            if(maps != null)
+            if (maps != null)
                 return;
-            if(rawManager.TryWaitRawRequest(new Request { AvailableMaps = new RequestAvailableMaps { } },out var response))
+            if (rawManager.TryWaitRawRequest(new Request { AvailableMaps = new RequestAvailableMaps { } }, out var response))
                 maps = new List<string>(response.AvailableMaps.BattlenetMapNames);
             else
                 throw new TimeoutException();
         }
         private int index;
         public void OnGameEnded() {
-            if(index == maps.Count)
+            if (index == maps.Count)
                 return;
-            var mapName = maps[index++%maps.Count];
+            var mapName = maps[index++ % maps.Count];
             log.LogSuccess($"Map Rotation: Next Map => {mapName}");
             settings.GameMap = mapName;
             abathur.Restart();
         }
-        public void OnStart() {}
-        public void OnStep() {}
-        public void OnRestart() {}
+        public void OnStart() { }
+        public void OnStep() { }
+        public void OnRestart() { }
     }
 }

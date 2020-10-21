@@ -3,8 +3,7 @@ using Abathur.Core;
 using NydusNetwork.API.Protocol;
 using System.Linq;
 
-namespace Abathur.Modules
-{
+namespace Abathur.Modules {
     class AutoSupply : IModule {
         private IIntelManager intelManager;
         private IProductionManager productionManager;
@@ -13,16 +12,16 @@ namespace Abathur.Modules
             this.productionManager = productionManager;
         }
         void IModule.OnStep() {
-            if(intelManager.Common.FoodCap >= 200)
+            if (intelManager.Common.FoodCap >= 200)
                 return;
-            if(intelManager.Common.FoodUsed < intelManager.Common.FoodCap)
+            if (intelManager.Common.FoodUsed < intelManager.Common.FoodCap)
                 return;
-            if(intelManager.ProductionQueue.Where(u => u.UnitId == GameConstants.RaceSupply).FirstOrDefault() != null)
+            if (intelManager.ProductionQueue.Where(u => u.UnitId == GameConstants.RaceSupply).FirstOrDefault() != null)
                 return;
             productionManager.QueueUnitImportant(GameConstants.RaceSupply);
         }
         void IModule.Initialize() { }
-        void IModule.OnStart() { } 
+        void IModule.OnStart() { }
         void IModule.OnGameEnded() { }
         void IModule.OnRestart() { }
     }

@@ -4,10 +4,8 @@ using Abathur.Core.Intel.Clustering;
 using Abathur.Model;
 using NydusNetwork.API.Protocol;
 
-namespace Abathur.Core.Intel
-{
-    public class Region
-    {
+namespace Abathur.Core.Intel {
+    public class Region {
         public int RegionId { get; set; }
         public List<Tile> Tiles { get; private set; } = new List<Tile>();
         public IColony Colony { get; set; }
@@ -18,10 +16,9 @@ namespace Abathur.Core.Intel
         public int MinY { get; set; } = Int32.MaxValue;
         public int MaxY { get; set; } = Int32.MinValue;
 
-        public bool InRegion(Unit unit)
-        {
+        public bool InRegion(Unit unit) {
             var x = unit.Pos.X;
-            var y = unit.Pos.Y; 
+            var y = unit.Pos.Y;
 
             return x >= MinX && x <= MaxX && y >= MinY && y <= MaxY;
         }
@@ -33,8 +30,7 @@ namespace Abathur.Core.Intel
             return x >= MinX && x <= MaxX && y >= MinY && y <= MaxY;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return "Region Id: " + RegionId + "\n" +
                    "Colony: " + Colony.Point + "\n" +
                    "Tiles: " + Tiles.Count + "\n" +
